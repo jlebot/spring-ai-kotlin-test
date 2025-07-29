@@ -1,6 +1,8 @@
 # Spring AI Kotlin Test
 
-Ce projet est une application Spring Boot utilisant Kotlin et Spring AI avec le modèle OpenAI.
+Ce projet est une application Spring Boot développée en Kotlin, intégrant Spring AI avec le modèle OpenAI. 
+Il s'agit d'un projet expérimental dont l'objectif principal est de découvrir et d'explorer l'intégration de Spring AI dans un environnement Kotlin. 
+Ce projet n'est pas destiné à un usage en production, la gestion des erreurs et la couverture de tests n'ont d'ailleurs pas encore été mises en place.
 
 ## Prérequis
 - Java 21
@@ -55,4 +57,3 @@ Pour exécuter les tests :
 ---
 
 Généré automatiquement.
-
