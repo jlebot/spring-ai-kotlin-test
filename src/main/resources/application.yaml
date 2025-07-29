@@ -1,9 +1,18 @@
 spring:
   application:
     name: spring-ai-kotlin-test
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
   ai:
     openai:
       api-key: ${OPENAI_API_KEY}
       chat:
         options:
           model: gpt-4o-mini
+      audio:
+        transcription:
+          options:
+            model: whisper-1
+            language: fr
