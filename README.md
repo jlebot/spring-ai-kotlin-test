@@ -17,11 +17,6 @@ Utilisez le wrapper Gradle pour compiler le projet :
 ./gradlew build
 ```
 
-Sous Windows :
-```bat
-./gradlew.bat build
-```
-
 ## Lancement de l'application
 
 Toujours avec le wrapper Gradle :
@@ -30,16 +25,19 @@ Toujours avec le wrapper Gradle :
 ./gradlew bootRun
 ```
 
-Sous Windows :
-```bat
-./gradlew.bat bootRun
-```
-
 L'application sera accessible sur [http://localhost:8080](http://localhost:8080).
 
 ## Configuration
 
 La clé API OpenAI doit être définie dans la variable d'environnement `OPENAI_API_KEY` avant de lancer l'application.
+
+Pour les services utilisant le RAG (Retrieval-Augmented Generation), il est nécessaire d'installer Milvus localement.
+Un fichier `docker-compose.yml` est fourni dans le répertoire `src/main/resources/milvus` pour en faciliter le déploiement.
+Il s'exécute via la commande :
+
+```bash
+docker compose up -d
+```
 
 ## Tests
 
@@ -56,4 +54,3 @@ Pour exécuter les tests :
 
 ---
 
-Généré automatiquement.
