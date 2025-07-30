@@ -9,6 +9,14 @@ Ce projet n'est pas destiné à un usage en production, la gestion des erreurs e
 - Gradle (wrapper inclus)
 - Une clé API OpenAI (variable d'environnement `OPENAI_API_KEY`)
 
+Afin d'utiliser le RAG (Retrieval-Augmented Generation), il est nécessaire d'installer Milvus localement.
+Un fichier `docker-compose.yml` est fourni dans le répertoire `src/main/resources/milvus` pour en faciliter le déploiement.
+Il s'exécute via la commande :
+
+```bash
+docker compose up -d
+```
+
 ## Construction du projet
 
 Utilisez le wrapper Gradle pour compiler le projet :
@@ -30,14 +38,6 @@ L'application sera accessible sur [http://localhost:8080](http://localhost:8080)
 ## Configuration
 
 La clé API OpenAI doit être définie dans la variable d'environnement `OPENAI_API_KEY` avant de lancer l'application.
-
-Pour les services utilisant le RAG (Retrieval-Augmented Generation), il est nécessaire d'installer Milvus localement.
-Un fichier `docker-compose.yml` est fourni dans le répertoire `src/main/resources/milvus` pour en faciliter le déploiement.
-Il s'exécute via la commande :
-
-```bash
-docker compose up -d
-```
 
 ## Tests
 
