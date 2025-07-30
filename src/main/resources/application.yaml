@@ -16,3 +16,11 @@ spring:
           options:
             model: whisper-1
             language: fr
+    vectorstore:
+      milvus:
+        client:
+          host: "localhost"
+          port: 19530
+        initialize-schema: true
+        databaseName: "default"
+        collectionName: "SpringAIKotlinTest"
