@@ -16,6 +16,9 @@ spring:
           options:
             model: whisper-1
             language: fr
+      embedding:
+        options:
+          model: text-embedding-3-small
     vectorstore:
       milvus:
         client:
@@ -24,3 +27,8 @@ spring:
         initialize-schema: true
         databaseName: "default"
         collectionName: "SpringAIKotlinTest"
+rag-test:
+  enabled: true
+  documentsToLoad:
+    - classpath:/rag/FT_ChauffeEau.pdf
+    - https://www.thermor.fr/produits/radiateur-electrique

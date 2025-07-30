@@ -4,8 +4,14 @@ import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt
 import org.springframework.ai.chat.client.ChatClient
 import org.springframework.ai.chat.model.ChatModel
 import org.springframework.ai.chat.prompt.PromptTemplate
+import org.springframework.ai.document.Document
 import org.springframework.ai.openai.OpenAiAudioTranscriptionModel
 import org.springframework.ai.openai.OpenAiAudioTranscriptionOptions
+import org.springframework.ai.reader.tika.TikaDocumentReader
+import org.springframework.ai.transformer.splitter.TextSplitter
+import org.springframework.ai.transformer.splitter.TokenTextSplitter
+import org.springframework.ai.vectorstore.VectorStore
+import org.springframework.core.io.Resource
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 
@@ -14,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile
 class OpenAIServiceImpl(
     private val chatModel: ChatModel,
     private val transcriptionModel: OpenAiAudioTranscriptionModel,
+    private val vectorStore: VectorStore
 ) : OpenAIService {
 
     private val chatClient = ChatClient.create(chatModel)
@@ -36,6 +43,21 @@ class OpenAIServiceImpl(
         )
         val response = transcriptionModel.call(prompt)
         return response.result.output
+    }
+
+    override fun loadToVectorStore(documents: List<Resource>) {
+        println("Loading ${documents.size} documents")
+        documents.forEach { document ->
+            println("Loading document: ${document.filename}")
+
+            val documentReader = TikaDocumentReader(document)
+            val documents: List<Document> = documentReader.get()
+
+            val textSplitter: TextSplitter = TokenTextSplitter()
+            val splitDocuments: List<Document> = textSplitter.apply(documents)
+
+            vectorStore.add(splitDocuments)
+        }
     }
 
 }
