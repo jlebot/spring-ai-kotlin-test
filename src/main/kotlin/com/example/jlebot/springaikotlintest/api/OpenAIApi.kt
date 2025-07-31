@@ -30,4 +30,11 @@ class OpenAIApi(
         return ok(service.transcribe(audioFile))
     }
 
+    @PostMapping("/vector-store/ask")
+    fun getAnswerFromVectorStore(
+        @RequestBody question: Question
+    ): ResponseEntity<String> {
+        return ok(service.getAnswerFromVectorStore(question.value))
+    }
+
 }

@@ -29,6 +29,6 @@ class LoadVectorStore(
 
     private fun VectorStore.shouldBeLoaded() =
         vectorStoreProperties.enabled &&
-            this.similaritySearch("Malicio 3").isNullOrEmpty()
+            this.similaritySearch("Malicio 3").isEmpty()
 }
 
