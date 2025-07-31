@@ -11,4 +11,6 @@ interface OpenAIService {
 
     fun loadToVectorStore(documents: List<Resource>)
 
+    fun getAnswerFromVectorStore(question: String) : String
+
 }

@@ -3,6 +3,7 @@ package com.example.jlebot.springaikotlintest.services
 import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt
 import org.springframework.ai.chat.client.ChatClient
 import org.springframework.ai.chat.model.ChatModel
+import org.springframework.ai.chat.prompt.Prompt
 import org.springframework.ai.chat.prompt.PromptTemplate
 import org.springframework.ai.document.Document
 import org.springframework.ai.openai.OpenAiAudioTranscriptionModel
@@ -10,6 +11,7 @@ import org.springframework.ai.openai.OpenAiAudioTranscriptionOptions
 import org.springframework.ai.reader.tika.TikaDocumentReader
 import org.springframework.ai.transformer.splitter.TextSplitter
 import org.springframework.ai.transformer.splitter.TokenTextSplitter
+import org.springframework.ai.vectorstore.SearchRequest
 import org.springframework.ai.vectorstore.VectorStore
 import org.springframework.core.io.Resource
 import org.springframework.stereotype.Service
@@ -58,6 +60,28 @@ class OpenAIServiceImpl(
 
             vectorStore.add(splitDocuments)
         }
+    }
+
+    override fun getAnswerFromVectorStore(question: String): String {
+        println("GetAnswerFromVectorStore, Question: $question")
+
+        val documents: List<Document> = vectorStore.similaritySearch(
+            SearchRequest.builder()
+                .query(question)
+                .topK(5)
+                .build()
+        )
+        println("Number of relevant documents founded: ${documents.size}")
+
+        val response = chatClient.prompt(
+            Prompt(
+                "Répond à la question suivante en utilisant les documents fournis :\n" +
+                        "Question: $question\n" +
+                        "Documents:\n" +
+                        documents.mapNotNull { it.text }.joinToString("\n")
+            )
+        ).call()
+        return response.content().orEmpty()
     }
 
 }
