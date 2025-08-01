@@ -1,6 +1,7 @@
 package com.example.jlebot.springaikotlintest.api
 
 import com.example.jlebot.springaikotlintest.model.Question
+import com.example.jlebot.springaikotlintest.model.VacationDestination
 import com.example.jlebot.springaikotlintest.services.OpenAIService
 import org.springframework.http.ResponseEntity
 import org.springframework.http.ResponseEntity.ok
@@ -21,6 +22,13 @@ class OpenAIApi(
         @RequestBody question: Question
     ): ResponseEntity<String> {
         return ok(service.getAnswer(question.value))
+    }
+
+    @PostMapping("/vacation-destination/ask")
+    fun getDestinationsFor(
+        @RequestBody question: Question
+    ): ResponseEntity<List<VacationDestination>> {
+        return ok(service.getDestinationsFor(question.value))
     }
 
     @PostMapping("/transcribe")
