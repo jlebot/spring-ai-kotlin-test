@@ -1,5 +1,6 @@
 package com.example.jlebot.springaikotlintest.services
 
+import com.example.jlebot.springaikotlintest.model.VacationDestination
 import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt
 import org.springframework.ai.chat.client.ChatClient
 import org.springframework.ai.chat.model.ChatModel
@@ -15,6 +16,7 @@ import org.springframework.ai.transformer.splitter.TokenTextSplitter
 import org.springframework.ai.vectorstore.SearchRequest
 import org.springframework.ai.vectorstore.VectorStore
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.core.io.Resource
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -41,6 +43,24 @@ class OpenAIServiceImpl(
 
         val response = chatClient.prompt(prompt).call()
         return response.content().orEmpty()
+    }
+
+    override fun getDestinationsFor(criteria: String): List<VacationDestination> {
+        val systemMessage = SystemPromptTemplate(
+            "Tu es un assistant virtuel spécialisé dans les destinations de vacances. "
+        ).createMessage()
+
+        val userMessage = PromptTemplate(
+            "Liste les destinations de vacances en fonction des critères suivants :\n {criteria}.\n " +
+                    "La liste doit contenir au maximum 5 destinations."
+        ).createMessage(mapOf("criteria" to criteria))
+
+        val response = chatClient.prompt(Prompt(listOf(systemMessage, userMessage)))
+            .call()
+            .entity(
+                object : ParameterizedTypeReference<List<VacationDestination>>() {}
+            )
+        return response.orEmpty()
     }
 
     override fun transcribe(audioFile: MultipartFile): String {
