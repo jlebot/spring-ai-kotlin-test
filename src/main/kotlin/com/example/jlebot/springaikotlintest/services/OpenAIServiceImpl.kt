@@ -3,6 +3,10 @@ package com.example.jlebot.springaikotlintest.services
 import com.example.jlebot.springaikotlintest.model.VacationDestination
 import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt
 import org.springframework.ai.chat.client.ChatClient
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor
+import org.springframework.ai.chat.memory.MessageWindowChatMemory
+import org.springframework.ai.chat.memory.repository.jdbc.JdbcChatMemoryRepository
+import org.springframework.ai.chat.messages.Message
 import org.springframework.ai.chat.model.ChatModel
 import org.springframework.ai.chat.prompt.Prompt
 import org.springframework.ai.chat.prompt.PromptTemplate
@@ -26,10 +30,19 @@ import org.springframework.web.multipart.MultipartFile
 class OpenAIServiceImpl(
     private val chatModel: ChatModel,
     private val transcriptionModel: OpenAiAudioTranscriptionModel,
-    private val vectorStore: VectorStore
+    private val vectorStore: VectorStore,
+    private val jdbcChatMemoryRepository: JdbcChatMemoryRepository
 ) : OpenAIService {
 
-    private val chatClient = ChatClient.create(chatModel)
+    private val chatMemory = MessageWindowChatMemory.builder()
+        .chatMemoryRepository(jdbcChatMemoryRepository)
+        .maxMessages(10) // Set the maximum number of messages to retain in memory
+        .build()
+
+    private val chatClient = ChatClient.builder(chatModel)
+        .defaultAdvisors(
+            MessageChatMemoryAdvisor.builder(chatMemory).build()
+        ).build()
 
     @Value("classpath:/templates/rag-system-message.st")
     private val ragSystemMessage: Resource? = null
@@ -111,6 +124,11 @@ class OpenAIServiceImpl(
             Prompt(listOf(systemMessage, userMessage))
         ).call()
         return response.content().orEmpty()
+    }
+
+    override fun listAllChats(): Map<String, List<Message>> {
+        return jdbcChatMemoryRepository.findConversationIds()
+            .associateWith { jdbcChatMemoryRepository.findByConversationId(it) }
     }
 
 }
