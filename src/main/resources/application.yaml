@@ -27,6 +27,11 @@ spring:
         initialize-schema: true
         databaseName: "default"
         collectionName: "SpringAIKotlinTest"
+    chat:
+      memory:
+        repository:
+          jdbc:
+            schema: classpath:/h2/schema-h2.sql
 rag-test:
   enabled: true
   documentsToLoad:
