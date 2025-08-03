@@ -15,7 +15,9 @@ interface OpenAIService {
 
     fun loadToVectorStore(documents: List<Resource>)
 
-    fun getAnswerFromVectorStore(question: String) : String
+    fun getAnswerWithManualVectorStoreSearch(question: String) : String
+
+    fun getAnswerWithAutoVectorStoreSearch(question: String) : String
 
     fun listAllChats() : Map<String, List<Message>>
 }

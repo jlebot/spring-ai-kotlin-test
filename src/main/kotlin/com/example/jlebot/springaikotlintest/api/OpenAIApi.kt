@@ -42,9 +42,13 @@ class OpenAIApi(
 
     @PostMapping("/vector-store/ask")
     fun getAnswerFromVectorStore(
+        @RequestParam("auto") auto: Boolean = true,
         @RequestBody question: Question
     ): ResponseEntity<String> {
-        return ok(service.getAnswerFromVectorStore(question.value))
+        return if (auto)
+            ok(service.getAnswerWithAutoVectorStoreSearch(question.value))
+        else
+            ok(service.getAnswerWithManualVectorStoreSearch(question.value))
     }
 
     @GetMapping("/sessions")
