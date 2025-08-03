@@ -4,6 +4,7 @@ import com.example.jlebot.springaikotlintest.model.VacationDestination
 import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt
 import org.springframework.ai.chat.client.ChatClient
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor
 import org.springframework.ai.chat.memory.MessageWindowChatMemory
 import org.springframework.ai.chat.memory.repository.jdbc.JdbcChatMemoryRepository
 import org.springframework.ai.chat.messages.Message
@@ -45,10 +46,10 @@ class OpenAIServiceImpl(
         ).build()
 
     @Value("classpath:/templates/rag-system-message.st")
-    private val ragSystemMessage: Resource? = null
+    private lateinit var ragSystemMessage: Resource
 
     @Value("classpath:/templates/rag-prompt-template.st")
-    private val ragPromptTemplate: Resource? = null
+    private lateinit var ragPromptTemplate: Resource
 
     override fun getAnswer(question: String): String {
         val promptTemplate = PromptTemplate(question)
@@ -103,7 +104,7 @@ class OpenAIServiceImpl(
         }
     }
 
-    override fun getAnswerFromVectorStore(question: String): String {
+    override fun getAnswerWithManualVectorStoreSearch(question: String): String {
         println("GetAnswerFromVectorStore, Question: $question")
         val documents: List<Document> = vectorStore.similaritySearch(
             SearchRequest.builder()
@@ -117,12 +118,33 @@ class OpenAIServiceImpl(
         val userMessage = PromptTemplate(ragPromptTemplate).createMessage(
             mapOf(
                 "input" to question,
-                "documents" to documents.mapNotNull { it.text }.joinToString("\n"))
+                "documents" to documents.mapNotNull { it.text }.joinToString("\n")
+            )
         )
 
-        val response = chatClient.prompt(
-            Prompt(listOf(systemMessage, userMessage))
-        ).call()
+        val response = chatClient
+            .prompt()
+            .messages(listOf(systemMessage, userMessage))
+            .call()
+        return response.content().orEmpty()
+    }
+
+    override fun getAnswerWithAutoVectorStoreSearch(question: String): String {
+        val response = chatClient
+            .prompt()
+            .system(ragSystemMessage)
+            .user(question)
+            .advisors(
+                QuestionAnswerAdvisor.builder(vectorStore)
+                    .searchRequest(
+                        SearchRequest.builder()
+                            .query(question)
+                            .topK(5)
+                            .build()
+                    )
+                    .build()
+            )
+            .call()
         return response.content().orEmpty()
     }
 
