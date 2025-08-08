@@ -20,4 +20,6 @@ interface OpenAIService {
     fun getAnswerWithAutoVectorStoreSearch(question: String) : String
 
     fun listAllChats() : Map<String, List<Message>>
+
+    fun askWithTools(question: String) : String
 }

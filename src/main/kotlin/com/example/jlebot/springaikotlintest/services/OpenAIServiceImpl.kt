@@ -1,6 +1,7 @@
 package com.example.jlebot.springaikotlintest.services
 
 import com.example.jlebot.springaikotlintest.model.VacationDestination
+import com.example.jlebot.springaikotlintest.tools.MyTasksTools
 import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt
 import org.springframework.ai.chat.client.ChatClient
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor
@@ -32,7 +33,8 @@ class OpenAIServiceImpl(
     private val chatModel: ChatModel,
     private val transcriptionModel: OpenAiAudioTranscriptionModel,
     private val vectorStore: VectorStore,
-    private val jdbcChatMemoryRepository: JdbcChatMemoryRepository
+    private val jdbcChatMemoryRepository: JdbcChatMemoryRepository,
+    private val myTasksTools: MyTasksTools
 ) : OpenAIService {
 
     private val chatMemory = MessageWindowChatMemory.builder()
@@ -151,6 +153,16 @@ class OpenAIServiceImpl(
     override fun listAllChats(): Map<String, List<Message>> {
         return jdbcChatMemoryRepository.findConversationIds()
             .associateWith { jdbcChatMemoryRepository.findByConversationId(it) }
+    }
+
+    override fun askWithTools(question: String): String {
+        val response = chatClient
+            .prompt()
+            .system("Tu es un assistant virtuel qui peut répondre à des questions et exécuter des commandes.")
+            .user(question)
+            .tools(myTasksTools)
+            .call()
+        return response.content().orEmpty()
     }
 
 }

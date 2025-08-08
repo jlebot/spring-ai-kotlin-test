@@ -56,4 +56,11 @@ class OpenAIApi(
         return ok(service.listAllChats())
     }
 
+    @PostMapping("/ask-with-tools")
+    fun askWithTools(
+        @RequestBody question: Question
+    ): ResponseEntity<String> {
+        return ok(service.askWithTools(question.value))
+    }
+
 }
