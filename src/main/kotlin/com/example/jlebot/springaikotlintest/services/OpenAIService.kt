@@ -22,4 +22,6 @@ interface OpenAIService {
     fun listAllChats() : Map<String, List<Message>>
 
     fun askWithTools(question: String) : String
+
+    fun textToSpeech(text: String) : ByteArray
 }

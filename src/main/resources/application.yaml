@@ -16,10 +16,13 @@ spring:
           options:
             model: whisper-1
             language: fr
+        speech:
+          options:
+            model: tts-1
       embedding:
         options:
           model: text-embedding-3-small
-    vectorstore:
+    vector-store:
       milvus:
         client:
           host: "localhost"
