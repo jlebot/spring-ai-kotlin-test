@@ -16,6 +16,7 @@ import org.springframework.ai.chat.prompt.SystemPromptTemplate
 import org.springframework.ai.document.Document
 import org.springframework.ai.openai.OpenAiAudioTranscriptionModel
 import org.springframework.ai.openai.OpenAiAudioTranscriptionOptions
+import org.springframework.ai.openai.audio.speech.SpeechModel
 import org.springframework.ai.reader.tika.TikaDocumentReader
 import org.springframework.ai.transformer.splitter.TextSplitter
 import org.springframework.ai.transformer.splitter.TokenTextSplitter
@@ -32,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile
 class OpenAIServiceImpl(
     private val chatModel: ChatModel,
     private val transcriptionModel: OpenAiAudioTranscriptionModel,
+    private val speechModel: SpeechModel,
     private val vectorStore: VectorStore,
     private val jdbcChatMemoryRepository: JdbcChatMemoryRepository,
     private val myTasksTools: MyTasksTools
@@ -163,6 +165,10 @@ class OpenAIServiceImpl(
             .tools(myTasksTools)
             .call()
         return response.content().orEmpty()
+    }
+
+    override fun textToSpeech(text: String): ByteArray {
+        return speechModel.call(text)
     }
 
 }

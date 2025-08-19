@@ -1,6 +1,7 @@
 package com.example.jlebot.springaikotlintest.api
 
 import com.example.jlebot.springaikotlintest.model.Question
+import com.example.jlebot.springaikotlintest.model.TextToConvert
 import com.example.jlebot.springaikotlintest.model.VacationDestination
 import com.example.jlebot.springaikotlintest.services.OpenAIService
 import org.springframework.ai.chat.messages.Message
@@ -61,6 +62,13 @@ class OpenAIApi(
         @RequestBody question: Question
     ): ResponseEntity<String> {
         return ok(service.askWithTools(question.value))
+    }
+
+    @PostMapping("/tts")
+    fun textToSpeech(
+        @RequestBody text: TextToConvert
+    ): ResponseEntity<ByteArray> {
+        return ok(service.textToSpeech(text.value))
     }
 
 }
