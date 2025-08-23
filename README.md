@@ -25,6 +25,10 @@ Utilisez le wrapper Gradle pour compiler le projet :
 ./gradlew build
 ```
 
+## Configuration
+
+La clé API OpenAI doit être définie dans la variable d'environnement `OPENAI_API_KEY` avant de lancer l'application.
+
 ## Lancement de l'application
 
 Toujours avec le wrapper Gradle :
@@ -35,9 +39,7 @@ Toujours avec le wrapper Gradle :
 
 L'application sera accessible sur [http://localhost:8080](http://localhost:8080).
 
-## Configuration
-
-La clé API OpenAI doit être définie dans la variable d'environnement `OPENAI_API_KEY` avant de lancer l'application.
+La documentation de l'API est accessible via Swagger sur [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 
 ## Tests
 
@@ -53,4 +55,3 @@ Pour exécuter les tests :
 - `src/main/resources/application.yaml` : configuration Spring
 
 ---
-
