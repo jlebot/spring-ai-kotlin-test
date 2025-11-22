@@ -26,6 +26,12 @@ class RAGServiceImpl(
     private val jdbcChatMemoryRepository: JdbcChatMemoryRepository,
 ) : RAGService {
 
+    @Value("classpath:/templates/rag-system-message.st")
+    private lateinit var ragSystemMessage: Resource
+
+    @Value("classpath:/templates/rag-prompt-template.st")
+    private lateinit var ragPromptTemplate: Resource
+
     private val chatMemory = MessageWindowChatMemory.builder()
         .chatMemoryRepository(jdbcChatMemoryRepository)
         .maxMessages(10) // Set the maximum number of messages to retain in memory
@@ -35,12 +41,6 @@ class RAGServiceImpl(
         .defaultAdvisors(
             MessageChatMemoryAdvisor.builder(chatMemory).build()
         ).build()
-
-    @Value("classpath:/templates/rag-system-message.st")
-    private lateinit var ragSystemMessage: Resource
-
-    @Value("classpath:/templates/rag-prompt-template.st")
-    private lateinit var ragPromptTemplate: Resource
 
     override fun loadToVectorStore(documents: List<Resource>) {
         println("Loading ${documents.size} documents")

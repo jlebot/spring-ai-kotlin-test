@@ -6,4 +6,6 @@ interface McpService {
 
     fun listMcpTools() : List<McpToolDefinition>
 
+    fun getVideoInfos(url: String): String
+
 }
