@@ -35,8 +35,20 @@ spring:
         repository:
           jdbc:
             schema: classpath:/h2/schema-h2.sql
+    mcp:
+      client:
+        enabled: true
+        initialized: true
+        stdio:
+          connections:
+            docker-gateway:
+              command: docker
+              args: [ "mcp", "gateway", "run" ]
 rag-test:
   enabled: true
   documentsToLoad:
     - classpath:/rag/FT_ChauffeEau.pdf
     - https://www.thermor.fr/produits/radiateur-electrique
+logging:
+  level:
+    io.modelcontextprotocol.client.transport.StdioClientTransport: ERROR
