@@ -27,6 +27,7 @@ dependencies {
 	implementation("org.springframework.ai:spring-ai-advisors-vector-store")
 	implementation("org.springframework.ai:spring-ai-tika-document-reader")
 	implementation("org.springframework.ai:spring-ai-starter-model-chat-memory-repository-jdbc")
+    implementation("org.springframework.ai:spring-ai-starter-mcp-client")
 
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
