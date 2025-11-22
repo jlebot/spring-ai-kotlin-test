@@ -51,4 +51,5 @@ rag-test:
     - https://www.thermor.fr/produits/radiateur-electrique
 logging:
   level:
+    org.springframework.ai.model.tool.DefaultToolCallingManager: DEBUG
     io.modelcontextprotocol.client.transport.StdioClientTransport: ERROR

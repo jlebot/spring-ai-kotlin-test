@@ -17,6 +17,10 @@ Il s'exécute via la commande :
 docker compose up -d
 ```
 
+Afin d'utiliser le client MCP, il est nécessaire d'activer MCP Toolkit dans Docker Desktop: `Settings => "Enable Docker MCP Toolkit`
+
+Dans mon exemple j'utilise le server MCP `YouTube Transcripts` mais bien d'autres sont disponibles dans le catalogue
+
 ## Construction du projet
 
 Utilisez le wrapper Gradle pour compiler le projet :

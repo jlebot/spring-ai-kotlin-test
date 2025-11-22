@@ -7,9 +7,7 @@ import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor
 import org.springframework.ai.chat.memory.MessageWindowChatMemory
 import org.springframework.ai.chat.memory.repository.jdbc.JdbcChatMemoryRepository
 import org.springframework.ai.chat.model.ChatModel
-import org.springframework.ai.chat.prompt.Prompt
 import org.springframework.ai.chat.prompt.PromptTemplate
-import org.springframework.ai.chat.prompt.SystemPromptTemplate
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Service
 
@@ -40,16 +38,15 @@ class ChatServiceImpl(
     }
 
     override fun getDestinationsFor(criteria: String): List<VacationDestination> {
-        val systemMessage = SystemPromptTemplate(
-            "Tu es un assistant virtuel spécialisé dans les destinations de vacances. "
-        ).createMessage()
-
         val userMessage = PromptTemplate(
             "Liste les destinations de vacances en fonction des critères suivants :\n {criteria}.\n " +
                     "La liste doit contenir au maximum 5 destinations."
         ).createMessage(mapOf("criteria" to criteria))
 
-        val response = chatClient.prompt(Prompt(listOf(systemMessage, userMessage)))
+        val response = chatClient
+            .prompt()
+            .system("Tu es un assistant virtuel spécialisé dans les destinations de vacances.")
+            .messages(userMessage)
             .call()
             .entity(
                 object : ParameterizedTypeReference<List<VacationDestination>>() {}
